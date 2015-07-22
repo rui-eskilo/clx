@@ -1,0 +1,35 @@
+<% include layout/top %>
+
+<br>
+<div class="box-content">
+
+    <form method="POST" class="form-horizontal" action="/new">
+        <hr>
+        <h2 class="intro-text text-center">Criar Anuncio</h2>
+        <hr>
+        <div class="form-group">
+          <label>Titulo</label>
+          <input class="form-control" id="title1" name="title" type="text">
+        </div>
+        <div class="form-group">
+          <label>Descrição</label>
+          <input class="form-control" id="description1" name="description" type="text">
+        </div>
+        <div class="form-group">
+          <label>Dono</label>
+          <input class="form-control" id="owner1" name="owner" type="text">
+        </div>
+                <div class="form-group">
+          <label>Categoria</label>
+          <input class="form-control" id="category1" name="category" type="text">
+        </div>
+        <div class="form-group">
+          <label>Localização</label>
+          <input class="form-control" id="locate1" name="locate" type="text">
+        </div>
+        <br><br>
+        <button type="submit" class="btn btn-default" value="submit">Criar</button>
+        <button type="reset" class="btn btn-default" value="reset">Cancel</button>
+    </form>
+
+<% include layout/bottom %>
