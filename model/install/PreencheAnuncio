@@ -1,1 +1,1 @@
-INSERT INTO "Annoucement"(title, description, owner, category, locate, state) VALUES('Primeiro anuncio','Primeiro anuncio descriçao','Rui','Outros','Lisboa','verdadeiro');
+INSERT INTO "Annoucement"(title, description, price, photos, owner, category, locate, state) VALUES('Primeiro anuncio','Primeiro anuncio descriçao', '23', null, 'Rui','Outros','Lisboa','verdadeiro');

@@ -28,10 +28,8 @@ router.post('/new', function(req, res, next) {
 	//console.log("slb");
 	//console.log(req.body);
 	var title = req.body.title;
-	
-
-	//console.log(title);
 	var description = req.body.description;
+	var price = req.body.price;
 	var owner = req.body.owner;
 	var category = req.body.category;
 	var locate = req.body.locate;
@@ -40,11 +38,14 @@ router.post('/new', function(req, res, next) {
 	if(!title || !description || !owner || !category || !locate) return res.status(400).send("Dados invalidos");
 
 
+	console.log("precinho "+ price);
 	//console.log("slb2");
-	var annouce = new annoucementDb.Annoucement(null, title, description, owner, category, locate, "true");
+	var annouce = new annoucementDb.Annoucement(null, title, description, price, null, owner, category, locate, "true");
+	console.log(annouce);
   	annoucementDb.createAnnoucement(annouce, function(err, id)
   	{
   		console.log("slb3");
+  		console.log(id);
   		if(err) return next(err);
   		var redirect = '/' + id;
   		return res.redirect(redirect);
