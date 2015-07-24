@@ -12,10 +12,7 @@ router.get('/all', function(req, res, next) {
 			next(err);
 		}
 
-		//console.log(allAnnoucement);
-
 		var data = { annoucements: allAnnoucement, title: 'Anuncios' };
-		//console.log(data);
   		res.render('list', data);
 	});
 });
@@ -25,8 +22,6 @@ router.get('/new', function(req, res, next) {
 });
 
 router.post('/new', function(req, res, next) {
-	//console.log("slb");
-	//console.log(req.body);
 	var title = req.body.title;
 	var description = req.body.description;
 	var price = req.body.price;
@@ -39,7 +34,6 @@ router.post('/new', function(req, res, next) {
 
 
 	console.log("precinho "+ price);
-	//console.log("slb2");
 	var annouce = new annoucementDb.Annoucement(null, title, description, price, null, owner, category, locate, "true");
 	console.log(annouce);
   	annoucementDb.createAnnoucement(annouce, function(err, id)
@@ -69,42 +63,26 @@ router.get('/:id', function(req, res, next) {
 			next(err);
 		}
 
-		//console.log(annoucement);
-
 		var data = { annoucement: annouce, title: 'Anuncio' };
-		//console.log(data);
   		res.render('item', data);
 	});
 });
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-	//console.log(1);
 	
 	annoucementDb.getAllAnnoucement(5, function(err, allAnnoucement)
 	{
-		//console.log(2);
 		if(err) {
-			//res.status(500).send(JSON.stringify(err));
 			console.log(err);
 			next(err);
 		}
 
-		//console.log(allAnnoucement);
 
 		var data = { annoucements: allAnnoucement, title: 'Annoucement' };
-		//console.log(data);
   		res.render('index', data);
 	});
 
-  //next();
-  
-  /*
-  var annTmp = ["Bom dia", "1 2 3"];
-  var data = { annoucement: annTmp, title: 'Annoucement' };
-  res.render('index', data);
-  //res.render('index');
-  */
 
 });
 
