@@ -1,0 +1,19 @@
+<% include ./../layout/top %>
+
+<div class="container">
+	<h1>DashBoard</h1>
+
+	<% include ./../layout/messages %>
+
+	<% complaints.forEach(function(annoucement){ %>
+	<div class="alert alert-info" role="alert">
+  		<a href="/annoucement/view/<%=annoucement.annouce_id%>" class="alert-link">
+  			<%=complaint.title%>
+  		</a> 
+  		<%=annoucement.description%> <strong class="pull-right"><%=annoucement._date%></strong>
+	</div>
+	<% }); %>
+
+</div>
+
+<% include ./../layout/bottom %>

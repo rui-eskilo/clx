@@ -1,0 +1,32 @@
+<% include ./../layout/top %>
+
+<div class="container">
+	
+ <div class="content-inner-wrapper max-width-set">
+<div class="form-signin">
+ <!--using same class as login form-->
+ 
+ <h1 class="thin text-center">Esqueceu a Password?</h1>
+ <p class="text-center">Insira o seu email e receberá uma nova password</p>
+  <form role="form" method="POST">
+  <fieldset>
+   <input type="email" class="form-control" placeholder="Email address" required name="mail">
+   <button class="btn btn-primary btn-custom btn-lg" type="submit">Reset Password</button>
+  </fieldset>
+ </form>
+</div>
+<!-- /.form-signin-->
+
+<p class="text-center"><a href="/login">Voltar ao Login</a></p>
+
+ <% if(isvalid){%>
+	<div class="alert alert-info" role="alert">
+  <a href="#" class="alert-link">A Sua Nova Password é:  <%= nPasss %></a>
+</div>
+	<%}%>
+
+ </div><!--.content-inner-wrapper-->
+
+
+
+<% include ./../layout/bottom %>

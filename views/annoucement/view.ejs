@@ -1,0 +1,149 @@
+<% include ./../layout/top %>
+
+<div class="container">
+  <h1>Detalhe do Anúncio</h1>
+
+ <% include ./../layout/messages %>
+  <% if(user.isAuthenticated) { %>
+       <!-- Followup button -->
+      <form method="POST" action="/annoucement/view/<%=annoucement.annouce_id%>/follow" role="form" id="follow"  class="form-horizontal">
+        <div class="form-group">
+          <div class="pull-right">
+            <% if(!isFollowing) { %>
+              <button type="submit" name="follow" value="follow_up" class="btn btn-primary" form="follow"><img src="/images/myFavorites_icon.png" alt="" style="width:30px;height:30px;margin:0px 11px 0px 0px">Adicionar aos Favoritos</button>
+            <%} else {%>
+              <button type="submit" name="follow" value="follow_down" class="btn btn-primary" form="follow"><img src="/images/myFavorites_icon.png" alt="" style="width:30px;height:30px;margin:0px 11px 0px 0px">Retirar dos Favoritos</button>
+            <%}%>
+          </div>
+        </div>
+      </form>
+      <!-- Followup button - END -->
+  <% } %>
+  <form role="form" class="form-horizontal">
+
+    <div class="form-group">
+      <label for="txtTitle" class="col-sm-2 control-label">Título</label>
+      <div class="col-sm-10">
+        <input type="text" name="title" required class="form-control" readonly="readonly" id="txtTitle" value="<%=annoucement.title%>" placeholder="Título">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="description" class="col-sm-2 control-label">Descrição</label>
+      <div class="col-sm-10">
+        <textarea name="description" required class="form-control" readonly="readonly" id="description" cols="30" rows="10"><%=annoucement.description%></textarea>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="locate" class="col-sm-2 control-label">Localização (cidade)</label>
+      <div class="col-sm-10">
+        <input type="text" name="locate" required class="form-control" readonly="readonly" id="txtlocate" value="<%=annoucement.locate%>" placeholder="Localização">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="description" class="col-sm-2 control-label">Categoria</label>
+      <div class="col-sm-10">
+        <div class="dropdown">
+          <select id="ddCategory" name="category" class="btn btn-default" value="<%= annoucement.category%>" disabled>
+            <option value="<%= category.id %>"><%= category.name %></option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="price" class="col-sm-2 control-label">Preço</label>
+      <div class="col-sm-10">
+        <input type="text" name="price" required class="form-control" readonly="readonly" id="txtPrice" value="<%=annoucement.price%>" placeholder="Preço">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="owner" class="col-sm-2 control-label">Vendedor</label>
+      <div class="col-sm-5">
+        <input type="text" name="owner" required class="form-control" readonly="readonly" id="txtOwner" value="<%=user_owner.name%>" placeholder="Owner">
+      </div>
+
+      <label for="txtOwner" class="col-sm-2 control-label"> classificação do vendedor:</label>
+        <div class="col-sm-3">
+        <input type="text" name="owner_rating" required class="form-control" readonly="readonly" id="txtOwner" value="<%=user_owner.getRating()%>" placeholder="Owner">
+      </div>
+    </div>
+
+  </form>
+
+
+
+
+  <% if(user.isAuthenticated) { %>
+
+  <div class="col-sm-10">
+    
+
+      <% if(user.username == annoucement.owner) { %>
+        <a href="/annoucement/edit/<%=annoucement.annouce_id%>" class="btn btn-success" >Editar o anúncio</a>
+
+        <% if(annoucement._state == 'activo') { %>
+            <a href="/annoucement/close/<%=annoucement.annouce_id%>" class="btn btn-success" ><img class="icon-image" src="/images/inactive.png" alt="">&nbsp Cancelar o anúncio</a>
+        <% } %>
+        <% if(annoucement._state == 'cancelado') { %>
+            <a href="/annoucement/activate/<%=annoucement.annouce_id%>" class="btn btn-success" ><img class="icon-image" src="/images/active.png" alt="">&nbsp Activar o anúncio</a>
+        <% } %>
+
+
+      <%} else {%>
+      
+
+        <!-- User Rating -->
+        <form method="POST" action="/user/<%=annoucement.owner%>/vote?annoucementID=<%=annoucement.annouce_id%>" role="form" id="vote" class="form-horizontal">
+
+          <div class="form-group">
+            <label for="Voting" class="col-sm-2 control-label">Classificação do Vendedor</label>
+              <div class="col-sm-3 control-label">
+                <label for="user_salesman_rating" placeholder="class">total de votações: <%=user_owner.votes_users%> </label>
+              </div>
+
+<div class="col-sm-5">
+    <div class="dropdown">
+      <select id="Rating" name="value_voted" class="btn btn-default">
+        <option>Seleccione...</option>
+        <% ratings.forEach(function(r) { %>
+        <option value="<%= r.val %>"><%= r.val %></option>
+        <% }) %>
+      </select>
+      <button type="submit" name="voted" value="voted_buttom" control-label><img src="/images/vote-icon.png" alt="" style="width:30px;height:30px">Votar</button> 
+    </div>
+</div>
+
+
+        </div>
+
+
+            
+        </form>
+        <!-- User Rating - END -->
+
+      <%}%>
+    </div>
+
+    
+    </div>
+    
+  </div>
+
+
+
+  </div>
+<%}%>
+</div>
+  <!-- Comment section -->
+  <hr>
+  <h3>Comentários</h3>
+  <% include ./../comments/commentarea %>  
+  <!-- Comment section - END -->  
+
+</div>
+
+<% include ./../layout/bottom %>

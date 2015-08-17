@@ -1,0 +1,102 @@
+<% include ./../layout/top %>
+
+<div class="container">
+	<h1><%=list_title%></h1>
+	<% if(list_info != '' ) { %>
+		<p> <img class="icon-image" src="/images/info_icon.png" alt=""> <%=list_info%></p>
+	<% } %>
+
+	<% include ./../layout/messages %>	
+
+	<% for(var i = 0; i < pagination.nrecperpage && pagination.startidx+i < annoucements.length; i++) { %>
+	<div class="media">
+		<div class="media-left media-middle">
+			<%if(list_type == 'myAds'){%>
+				<%if (annoucements[pagination.startidx+i]._state == 'activo') { %>
+					<img class="slide-image" src="/images/active.png" title="Anúncio activo" alt=""style="margin:0px 11px 0px 0px"><img class="slide-image" src="http://lorempixel.com/350/350" alt="">
+				<% } else {%>
+					<img class="slide-image" src="/images/inactive.png" title="Anúncio cancelado" alt=""style="margin:0px 11px 0px 0px"><img class="slide-image" src="http://lorempixel.com/350/350" alt="">
+				<% }%>
+				<div class="media-body">
+					<h4 class="media-heading">
+						<a href="/annoucement/view/<%=annoucements[+pagination.startidx+i].annouce_id%>"><%= annoucements[pagination.startidx+i].title %></a>
+					</h4>
+					<%= annoucements[pagination.startidx+i].description %>
+				</div>
+				
+
+			<% } else {%>				
+					<img class="slide-image" src="http://lorempixel.com/350/350" alt="">
+
+					<div class="media-body">
+						<h4 class="media-heading">
+							<a href="/annoucement/view/<%=annoucements[+pagination.startidx+i].annouce_id%>"><%= annoucements[pagination.startidx+i].title %></a>
+						</h4>
+						<%= annoucements[pagination.startidx+i].description %>
+					</div>
+			<%}%>
+
+		</div>
+
+	</div>
+	<%}%>	
+
+	<% if(pagination.haspagination) { %>
+	<nav>
+		<ul class="pagination">
+			<li>
+				<%if(pagination.hasprevpage){%>
+
+
+
+					<%if(list_type == 'myAds'){%>
+						<a href="/annoucement/user/<%= annoucements[pagination.startidx+i -1].owner %>?page=<%=(+pagination.page-1)%>" aria-label="Previous"><span aria-hidden="true">&laquo página anterior</span></a>
+					<%} else if(list_type == 'allAds'){%>
+								<a href="/annoucement/list?page=<%=(+pagination.page-1)%>" aria-label="Previous"><span aria-hidden="true">&laquo página anterior</span></a>		
+							<%} else if(list_type == 'byCategory'){%>
+										<a href="/annoucement/category?name=<%= category_name %>&id=<%= category_id %>&page=<%=(+pagination.page-1)%>" aria-label="Previous"><span aria-hidden="true">&laquo página anterior</span></a>
+					  				<%} else if(list_type == 'myFavorites'){%>
+										<a href="/annoucement/favorites/<%=username%>?page=<%=(+pagination.page-1)%>" aria-label="Previous"><span aria-hidden="true">&laquo página anterior</span></a>
+										<%} else if(list_type == 'advancedSearch'){%>
+											<a href="/annoucement/list/search?title=<%= search_title %>&locate=<%= search_locate %>&category=<%= search_category %>&page=<%=(+pagination.page-1)%>" aria-label="Previous"><span aria-hidden="true">&laquo página anterior</span></a>
+
+					  						<%}%>		
+				
+				<%} else {%>
+				
+				<%}%>
+			</li>
+
+			<li>
+				<%if(pagination.hasnextpage){%>
+
+					<%if(list_type == 'myAds'){%>
+						<a href="/annoucement/user/<%= annoucements[pagination.startidx+i -1].owner %>?page=<%=(+pagination.page+1)%>" aria-label="Next"><span aria-hidden="true">página seguinte &raquo</span></a>		
+
+					<%} else if(list_type == 'allAds'){%>
+								<a href="/annoucement/list?page=<%=(+pagination.page+1)%>" aria-label="Next"><span aria-hidden="true">página seguinte &raquo</span></a>
+
+							<%} else if(list_type == 'byCategory'){%>
+									<a href="/annoucement/category?name=<%= category_name %>&id=<%= category_id %>&page=<%=(+pagination.page+1)%>" aria-label="Next"><span aria-hidden="true">página seguinte &raquo</span></a>
+									<%} else if(list_type == 'myFavorites'){%>
+											<a href="/annoucement/favorites/<%=username%>?page=<%=(+pagination.page+1)%>" aria-label="Next"><span aria-hidden="true">página seguinte &raquo</span></a>
+											<%} else if(list_type == 'advancedSearch'){%>
+													<a href="/annoucement/list/search?title=<%= search_title %>&locate=<%= search_locate %>&category=<%= search_category %>&page=<%=(+pagination.page+1)%>" aria-label="Next"><span aria-hidden="true">página seguinte &raquo</span></a>
+
+					  								<%}%>		
+				<%} else {%>
+				
+				<%}%>
+			</li>
+		</ul>
+	</nav>
+	<% } %>
+	<br>
+
+	<% if(user.isAuthenticated && list_type == 'myAds' && annoucements.length == 0 ) { %>
+	<a href="/annoucement/new" class="btn btn-success">Criar Anúncio</a>
+	<% } %>
+
+</div>
+
+<% include ./../layout/bottom %>

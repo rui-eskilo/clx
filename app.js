@@ -4,9 +4,11 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var userAuth = require('./userAuthentication');
+var nodeUuid = require('node-uuid');
+var flash = require('connect-flash');  //var flash = require('req-flash');
 
-var routes = require('./routes/index');
-var how = require('./routes/how');
+
 
 var app = express();
 
@@ -21,10 +23,42 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(require('express-session')({ secret: 'ThyZ is a big secret!: cat', resave: false, saveUninitialized: true, cookie: {maxAge:60000} }));
+app.use(require('passport').initialize());
+app.use(require('passport').session());
+app.use(flash());
 
-app.use('/how', how);
+app.locals.title = "CLX";
+
+app.use(function(req, res, next) {
+  var reqUrl = req.url;
+  res.locals.isActive = function(url) {
+     return reqUrl == url;
+ }
+ next();
+});
+
+
+userAuth(app);
+
+var routes = require('./routes/index');
+//var how = require('./routes/how');
+require('./routes/passRecovery_route')(app);
+require('./routes/annoucement_route')(app);
+require('./routes/user_route')(app);
+require('./routes/about_route')(app);
+require('./routes/dashboard_route')(app);
+
+
+//app.use('/how', how);
 app.use('/', routes);
 
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+    var err = new Error('Not Found');
+    err.status = 404;
+    next(err);
+});
 
 /*
 // catch 404 and forward to error handler
@@ -49,8 +83,8 @@ if (app.get('env') === 'development') {
     });
   });
 }
-*/
 
+/*
 // production error handler
 // no stacktraces leaked to user
 app.use(function(err, req, res, next) {
@@ -61,6 +95,6 @@ app.use(function(err, req, res, next) {
     error: {}
   });
 });
-
+*/
 
 module.exports = app;

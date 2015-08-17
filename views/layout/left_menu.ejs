@@ -1,9 +1,64 @@
             <div class="col-md-3">
-                <p class="lead">CLX</p>
+                <p class="lead">CLX - é vender ou comprar!</p>
                 <div class="list-group">
-                    <a href="#" class="list-group-item">Electronico</a>
-                    <a href="#" class="list-group-item">Roupa</a>
-                    <a href="#" class="list-group-item">Transportes</a>
-                    <a href="#" class="list-group-item">Diversos</a>
+
+                    <% if(user.isAuthenticated){%>
+                        <a href="/annoucement/new" class="list-group-item"><img src="/images/insert_icon.png" alt="" style="width:30px;height:30px;margin:0px 11px 0px 0px">Inserir Anúncio</a>
+
+                        <a href="/annoucement/user/<%=username%>" class="list-group-item"><img src="/images/myAnn_icon.png" alt="" style="width:30px;height:30px;margin:0px 11px 0px 0px">Os meus Anúncios</a>
+
+                        <a href="/annoucement/favorites/<%=username%>" class="list-group-item"><img src="/images/myFavorites_icon.png" alt="" style="width:30px;height:30px;margin:0px 11px 0px 0px">Favoritos</a>
+                    <%}%>
+
+                    <p style="margin:14px 0px 4px 0px">Categorias</p>
+                    <% categories.forEach(function(category) { %>
+                        <a href="/annoucement/category?name=<%= category.name %>&id=<%= category.id %>" class="list-group-item"><%= category.name %></a>
+                    <% }) %>
+
                 </div>
+
+
+                <hr>
+<p>Pesquisa avançada</p>
+
+  <form method="GET" action="/annoucement/list/search" class="form-horizontal" role="form">
+
+    <div class="form-group">
+      <label for="txtTitle" class="col-sm-2 control-label">Título</label>
+      <div class="col-sm-10">
+        <input type="text" name="title" required class="form-control" id="txtTitle" placeholder="Título">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="txtLocate" class="col-sm-4 control-label">Localidade</label>
+      <div class="col-sm-8">
+        <input type="text" name="locate" required class="form-control" id="txtLocate" placeholder="Localidade">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="category" class="col-sm-3 control-label">Categoria</label>
+      <div class="col-sm-9">
+        <div class="dropdown">
+          <select id="ddCategory" name="category" class="btn btn-default">
+            <% categories.forEach(function(category) { %>
+            <option value="<%= category.id %>"><%= category.name %></option>
+            <% }) %>
+          </select>
+       </div>
+     </div>
+   </div>
+
+
+   <div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+      <button type="submit" class="btn btn-success">Pesquisar >> </button>
+      
+    </div>
+  </div>
+</form>
+
+
+
             </div>

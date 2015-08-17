@@ -1,5 +1,6 @@
 {
     "db": {
-        "connString": "postgres://postgres:rui@localhost/clx_db"
+        
+        "connString": "postgres://postgres:123@localhost/clx_db"
     }
 }

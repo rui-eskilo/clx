@@ -1,12 +1,48 @@
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background-image:url(../images/OBYTr2.png); 
+  background-size: cover;
 }
 
 a {
-  color: #F0B7FF;
+  color: #00B7FF;
 }
 
-#eskilo {
-  background-color: #990000;
+input[readonly="readonly"]{
+	cursor: default;
 }
+
+textarea[readonly="readonly"]{
+	cursor: default;
+}
+
+.loginarea{
+	cursor: default;
+	font-weight: bold;
+}
+
+.slide-image{
+	width:30px;
+	height:30px;
+}
+
+.icon-image{
+	width:20px;
+	height:20px;
+}
+
+.margin{
+	margin-bottom:15px;
+}
+
+.comment-item{
+	background-color:#D4D4D4;
+}
+.comment-item-response{
+	background-color:#CACACA;
+	border-left:100px; /* padding-left: 100px; */
+}
+
+
+

@@ -1,0 +1,71 @@
+<% include ./../layout/top %>
+
+<div class="container">
+  <h1>Novo Anúncio</h1>
+
+  <% include ./../layout/messages %>
+
+  <form method="POST" class="form-horizontal" role="form">
+    <!-- ---------------- Titulo ------------------- -->
+    <div class="form-group">
+      <label for="txtTitle" class="col-sm-2 control-label">Título</label>
+      <div class="col-sm-10">
+        <input type="text" name="title" class="form-control" id="txtTitle" placeholder="Título">
+      </div>
+    </div>
+    <!-- ---------------- Descrição ------------------- -->
+    <div class="form-group">
+      <label for="description" class="col-sm-2 control-label">Descrição</label>
+      <div class="col-sm-10">
+        <textarea name="description" class="form-control" id="description" cols="30" rows="10" placeholder="Descrição"></textarea>
+      </div>
+    </div>
+    <!-- ---------------- Localização ------------------- -->
+    <div class="form-group">
+      <label for="locate" class="col-sm-2 control-label">Localização (cidade)</label>
+      <div class="col-sm-10">
+        <input type="text" name="locate" class="form-control" id="txtLocate"  placeholder="Localização">
+      </div>
+    </div>
+    <!-- ---------------- Categoria ------------------- -->
+    <div class="form-group">
+      <label for="category" class="col-sm-2 control-label">Categoria</label>
+      <div class="col-sm-10">
+        <div class="dropdown">
+          <select id="ddCategory" name="category" class="btn btn-default">
+            <option value="">Seleccione...</option>
+            <% categories.forEach(function(category) { %>
+            <option value="<%= category.id %>"><%= category.name %></option>
+            <% }) %>
+          </select>
+        </div>
+      </div>
+    </div>
+    <!-- ---------------- Preço ------------------- -->
+    <div class="form-group">
+      <label for="prc" class="col-sm-2 control-label">Preço</label>
+      <div class="col-sm-10">
+        <input type="text" name="price" class="form-control" id="price_id" placeholder="Preço">
+      </div>
+    </div>
+    <!-- ---------------- Foto ------------------- -->
+    <div class="form-group">
+      <label for="img" class="col-sm-2 control-label">Foto</label>
+      <div class="col-sm-10">
+        <input type="file" name="photo" class="form-control" id="photo_id" placeholder="Foto">
+      </div>
+    </div>
+
+
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-10">
+        <button type="submit" class="btn btn-success">Siga para bingo</button>
+        <a href="/annoucement" class="btn btn-success">Cancelar</a>
+      </div>
+    </div>
+  </form>
+
+
+</div>
+
+<% include ./../layout/bottom %>

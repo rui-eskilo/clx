@@ -1,0 +1,29 @@
+<% include ./../layout/top %>
+
+<div class="container">
+  <h1>Activar Anúncio</h1>
+
+  <% include ./../layout/messages %>
+
+
+
+
+
+
+  <form method="POST" class="form-horizontal" role="form">
+    <p>Tem a certesa que pretende activar o anúncio, passando este a ser novamente apresentado aos demais utilizadores do sistema?</p>
+    <p><strong><%= annoucement.title%></strong></p>
+
+    </div>
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-10">
+        <button type="submit" name=annouceID value=<%=annoucement.annouce_id%> class="btn btn-primary">Sim</button>
+        <a href="/annoucement/view/<%=annoucement.annouce_id%>" >Voltar ao anúncio</a>
+      </div>
+    </div>
+  </form>
+
+
+</div>
+
+<% include ./../layout/bottom %>
