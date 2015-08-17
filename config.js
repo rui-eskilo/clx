@@ -4,7 +4,7 @@ var configs = {
     "development": {
         getConnString: function()
         {
-            return "postgres://postgres:123@localhost/clx_db";
+            return "postgres://postgres:rui@localhost/clx_db";
         },
         getEnv: function()
         {
