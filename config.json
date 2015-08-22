@@ -1,6 +1,7 @@
 {
     "db": {
         
-        "connString": "postgres://postgres:123@localhost/clx_db"
+        //"connString": "postgres://postgres:123@localhost/clx_db"
+        "connString": "postgres://gwcmyzddrubonh:4sivfygzMu-kWfg_Z_V1M_EA8H@ec2-54-247-170-228.eu-west-1.compute.amazonaws.com:5432/dfcr2k7bcahjb2"
     }
 }

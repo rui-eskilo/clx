@@ -322,6 +322,9 @@ annoucementsRouter.post('/view/:id/newcomment', function(req, res)
         var price = req.body.price;
         var annoucement = new db.Annoucement(null, title, description, res.locals.user.username, category, locate, price, null, undefined);
 
+        console.log("FILE ###");
+        console.log(req.files);
+
         if(title == "") {
             req.flash("error", "Não foi possível criar o anúncio.");
             return res.render('annoucement/create', { annoucement: annoucement,
@@ -408,7 +411,41 @@ annoucementsRouter.post('/view/:id/newcomment', function(req, res)
                 res.redirect('/annoucement/view/' + id);
             });
         });     
-});
+    });
+
+    //FOTOS
+
+    //GET edit fotos annoucement
+    annoucementsRouter.get('/photo/:id', function(req, res) 
+    {
+
+        if(!req.isAuthenticated()){
+            res.render('user/access-denied', {action: "O utilizador tem de estar autenticado!"});
+        }
+
+        db.Annoucement.getById(req.param("id"), function(err, annoucement){
+            if(err){
+                req.flash("error", "Não foi possível obter o anúncio a alterar.");
+                res.redirect('/annoucement/view/' + req.param("id"));
+            }
+
+            db.Category.getAllCategories(function(err, allCategories)
+            {
+                if(err) req.flash("error", "Não foi possível obter a lista de categorias.");
+
+                var model = { title: app.locals.title,
+                categories: allCategories,
+                message: utils.getMessages(req),
+                annoucement: annoucement };
+
+                res.render('annoucement/photo', model );
+            });
+        });
+    });
+
+    //FALTA O POST
+
+
 
     //GET Close annoucement
     annoucementsRouter.get('/close/:id', function(req, res) 

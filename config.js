@@ -1,10 +1,13 @@
 //****
+var config = require('./config.json');
+var connString = config.db.connString;
+
 
 var configs = {
     "development": {
         getConnString: function()
         {
-            return "postgres://postgres:123@localhost/clx_db";
+            return connString;
         },
         getEnv: function()
         {

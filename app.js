@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 var userAuth = require('./userAuthentication');
 var nodeUuid = require('node-uuid');
 var flash = require('connect-flash');  //var flash = require('req-flash');
+var multer = require('multer');
 
 
 
@@ -23,12 +24,14 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(require('express-session')({ secret: 'ThyZ is a big secret!: cat', resave: false, saveUninitialized: true, cookie: {maxAge:60000} }));
+app.use(require('express-session')({ secret: 'ThyZ is a big secret!: cat', resave: false, saveUninitialized: true, cookie: {expires:false} }));
 app.use(require('passport').initialize());
 app.use(require('passport').session());
 app.use(flash());
+console.log(__dirname+'\\'+ 'public'+'\\'+'uploads');
+//app.use(multer({dest: path.join(__dirname, 'uploads') }));
 
-app.locals.title = "CLX";
+app.locals.title = "BENFICA";
 
 app.use(function(req, res, next) {
   var reqUrl = req.url;
