@@ -13,11 +13,12 @@
 		<div class="media-left media-middle">
 			<%if(list_type == 'myAds'){%>
 				<%if (annoucements[pagination.startidx+i]._state == 'activo') { %>
-					<img class="slide-image" src="/images/active.png" title="Anúncio activo" alt=""style="margin:0px 11px 0px 0px"><img class="slide-image" src="http://lorempixel.com/350/350" alt="">
+					<img class="slide-image" src="/images/active.png" title="Anúncio activo" alt=""style="margin:0px 11px 0px 0px">
 				<% } else {%>
-					<img class="slide-image" src="/images/inactive.png" title="Anúncio cancelado" alt=""style="margin:0px 11px 0px 0px"><img class="slide-image" src="http://lorempixel.com/350/350" alt="">
+					<img class="slide-image" src="/images/inactive.png" title="Anúncio cancelado" alt=""style="margin:0px 11px 0px 0px">
 				<% }%>
 				<div class="media-body">
+					<img class="slide-image" src="http://lorempixel.com/350/350" alt="">
 					<h4 class="media-heading">
 						<a href="/annoucement/view/<%=annoucements[+pagination.startidx+i].annouce_id%>"><%= annoucements[pagination.startidx+i].title %></a>
 					</h4>
@@ -26,9 +27,25 @@
 				
 
 			<% } else {%>				
-					<img class="slide-image" src="http://lorempixel.com/350/350" alt="">
 
-					<div class="media-body">
+					<div class="media-body"> 
+					
+						<img class="slide-image" src="http://lorempixel.com/350/350" alt="">
+<%if(list_type == 'myFavorites'){%>
+	<% annoucementsWithActivity.forEach(function(e){ %>
+		<% if(e.annoucementid == annoucements[pagination.startidx+i].annouce_id){ %>
+				<%if (annoucements[pagination.startidx+i]._state == 'cancelado') { %>
+				<p class="activity-info"><img class="icon-image" src="/images/new_activity_icon.png" alt=""> O anúncio encontra-se <span style="color:red; font-weight:bold">Cancelado</span></p>
+				<% } else{ %>
+					<p class="activity-info"><img class="icon-image" src="/images/new_activity_icon.png" alt=""> Consulte as alterações no anúncio </p>
+				<% } %>
+		<% } %>
+
+	<% }); %>
+
+								
+<% } %>
+
 						<h4 class="media-heading">
 							<a href="/annoucement/view/<%=annoucements[+pagination.startidx+i].annouce_id%>"><%= annoucements[pagination.startidx+i].title %></a>
 						</h4>

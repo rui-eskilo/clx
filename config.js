@@ -1,13 +1,10 @@
 //****
-var config = require('./config.json');
-var connString = config.db.connString;
-
 
 var configs = {
     "development": {
         getConnString: function()
         {
-            return connString;
+            return "postgres://postgres:123@localhost/clx_db";
         },
         getEnv: function()
         {
@@ -15,11 +12,16 @@ var configs = {
         },
         getNItemsPerPage: function()
         {
-            return 6;
+            return 3;
         },
         getNbrAnnoucementsAtHomepage: function()
         {
-            return 9;
+            return 6;
+        },
+
+        getNCharDescription: function()
+        {
+            return 64;
         }
     }
 }

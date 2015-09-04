@@ -28,3 +28,11 @@ module.exports.getPagination = function(npage, nrecperpage, listlength){
 
 	return pagination;
 }
+
+module.exports.arrangeString = function(str, nChars){
+	if(str.length > nChars)
+		return str.slice(0,nChars) + "...";
+	else{
+		return str.slice(0,nChars);
+	}
+}

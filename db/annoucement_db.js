@@ -61,10 +61,10 @@ module.exports.Annoucement.createNew = function(annoucement, cb)
 module.exports.Annoucement.edit = function(annoucement, cb)
 {
 	db.ExecuteQuery("UPDATE Annoucement SET (title, description, owner, category, locate, price, _date, _state) = ($2, $3, $4, $5, $6, $7, $8, $9) WHERE annouce_id = $1",
-		[annoucement.annouce_id, annoucement.title, annoucement.description, annoucement.owner,
+		[annoucement.annouce_id, annoucement.title, annoucement.description, annoucement.owner
 	                  , annoucement.category, annoucement.locate, annoucement.price, annoucement._date
 	                  , annoucement._state],
-		function(err) { cb(err, annoucement);
+		function(err) { cb(err, annoucement.annouce_id);
 		}
 	);
 };

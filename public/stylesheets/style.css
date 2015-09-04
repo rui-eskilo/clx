@@ -22,6 +22,16 @@ textarea[readonly="readonly"]{
 	font-weight: bold;
 }
 
+.homepage_img_section{
+	width:830px;
+	height:350px;
+}
+
+.homepage_image{
+	width: 100%;
+	height: 100%;
+}
+
 .slide-image{
 	width:30px;
 	height:30px;
@@ -39,25 +49,14 @@ textarea[readonly="readonly"]{
 .comment-item{
 	background-color:#D4D4D4;
 }
+
+.activity-info{
+	background-color:#D4D4D4;
+}
 .comment-item-response{
 	background-color:#CACACA;
 	border-left:100px; /* padding-left: 100px; */
 }
 
-.list-image{
-	width:80px;
-	height:80px;
-	float: left;
-	padding: 5px;
-}
 
-.list-image2{
-	width:80px;
-	height:80px;
-	margin-right: 20px;
-	margin-top: 40px;
-}
 
-.margin-header{
-	margin-top: 40px;
-}

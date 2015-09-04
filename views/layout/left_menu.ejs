@@ -7,7 +7,12 @@
 
                         <a href="/annoucement/user/<%=username%>" class="list-group-item"><img src="/images/myAnn_icon.png" alt="" style="width:30px;height:30px;margin:0px 11px 0px 0px">Os meus Anúncios</a>
 
-                        <a href="/annoucement/favorites/<%=username%>" class="list-group-item"><img src="/images/myFavorites_icon.png" alt="" style="width:30px;height:30px;margin:0px 11px 0px 0px">Favoritos</a>
+                        <a href="/annoucement/favorites/<%=username%>" class="list-group-item"><img src="/images/myFavorites_icon.png" alt="" style="width:30px;height:30px;margin:0px 11px 0px 0px" id="favoriteItem" 
+<% if(newActivity){%>
+  onload = "blinkId('favoriteItem')"
+<% } %>
+>Favoritos</a>
+                        
                     <%}%>
 
                     <p style="margin:14px 0px 4px 0px">Categorias</p>
@@ -16,7 +21,6 @@
                     <% }) %>
 
                 </div>
-
 
                 <hr>
 <p>Pesquisa avançada</p>

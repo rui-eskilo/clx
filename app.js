@@ -7,7 +7,6 @@ var bodyParser = require('body-parser');
 var userAuth = require('./userAuthentication');
 var nodeUuid = require('node-uuid');
 var flash = require('connect-flash');  //var flash = require('req-flash');
-//  var multer = require('multer');
 
 
 
@@ -28,11 +27,8 @@ app.use(require('express-session')({ secret: 'ThyZ is a big secret!: cat', resav
 app.use(require('passport').initialize());
 app.use(require('passport').session());
 app.use(flash());
-//console.log(__dirname+'\\'+ 'public'+'\\'+'uploads');
-//var destupl = path.join(__dirname, '/public/uploads/')
-//app.use(multer({dest: destupl}));
 
-app.locals.title = "BENFICA ";
+app.locals.title = "CLX";
 
 app.use(function(req, res, next) {
   var reqUrl = req.url;
@@ -51,7 +47,7 @@ require('./routes/passRecovery_route')(app);
 require('./routes/annoucement_route')(app);
 require('./routes/user_route')(app);
 require('./routes/about_route')(app);
-require('./routes/dashboard_route')(app);
+//require('./routes/dashboard_route')(app);
 
 
 //app.use('/how', how);
@@ -61,7 +57,9 @@ app.use('/', routes);
 app.use(function(req, res, next) {
     var err = new Error('Not Found');
     err.status = 404;
-    next(err);
+    res.status(404);
+    res.render('error',{err: err});
+    //next(err);
 });
 
 /*

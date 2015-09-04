@@ -1,13 +1,6 @@
 var config = require(require('path').resolve(__dirname, "../", "config.js"));
 var utils = require(require('path').resolve(__dirname, "../", "utils.js"));
 var user = require('./../userAuthentication.js').roles;
-var multer = require('multer');
-var path = require('path');
-
-var dir = path.join('public', 'uploads');
-//filesize in bytes, 1024*1024*5 5242880 5MB, 10 ficheiros
-var uploading = multer({dest: dir,
-                        limits: { fileSize : 5242880, files: 10} });
 
 
 module.exports = function(app) 
@@ -17,7 +10,7 @@ module.exports = function(app)
     var express = require('express');
     var annoucementsRouter = express.Router();
     var nperpage = config.getNItemsPerPage();
-
+    var nCharDescription = config.getNCharDescription();
 
     var allCategories;
     var allRatings = [{val:1},{val:2},{val:3},{val:4},{val:5}];   // Informação hardcoded apenas para facilitar o debug da aplicação
@@ -37,33 +30,45 @@ module.exports = function(app)
     /* GET favorites annoucements of a specific user */
     annoucementsRouter.get('/favorites/:username', function(req, res) 
     {
-        var page = req.query.page || 1;
+        if(res.locals.user.username == req.param("username")){
 
-        db.Followup.getAllFollowupByUser(req.param("username") , function(err, allFavorites)
-        {
-            if(err) req.flash('error','Obter lista de anúncios.');
+            var page = req.query.page || 1;
 
-            db.Annoucement.getAllAnnoucements(function(err, allAnnoucements){
+            db.Followup.getAllFollowupByUser(req.param("username") , function(err, allFavorites)
+            {
+                if(err) req.flash('error','Obter lista de anúncios.');
 
-                var allFavorites_map = allFavorites.map(function(f) { return f.annoucementid; });
-               
-                //var favoriteAds = allAnnoucements.filter(function(a) { return allFavorites_map.includes(a.annouce_id)}); // Array.prototype.includes() Not used, because this is an experimental API. 
-                
-                var favoriteAds = allAnnoucements.filter(function(a) { return allFavorites_map.indexOf(a.annouce_id) > -1 });
+                db.Annoucement.getAllAnnoucements(function(err, allAnnoucements){
 
+                    var allFavorites_map = allFavorites.map(function(f) { return f.annoucementid; });
+                   
+                    //var favoriteAds = allAnnoucements.filter(function(a) { return allFavorites_map.includes(a.annouce_id)}); // Array.prototype.includes() Not used, because this is an experimental API. 
+                    
+                    var favoriteAds = allAnnoucements.filter(function(a) { return allFavorites_map.indexOf(a.annouce_id) > -1 });
 
-            var model = { title: 'CLX',
-                pagination: utils.getPagination(page, nperpage, favoriteAds.length),
-                message: utils.getMessages(req),
-                username: res.locals.user.username,
-                annoucements: favoriteAds,
-                list_type : 'myFavorites',
-                list_title: 'Os meus Favoritos',
-                list_info : favoriteAds.length==0 ? 'Não tem anúncios na sua lista de Favoritos' : '' 
-            };
-            res.render('annoucement/list', model );
+                    favoriteAds.forEach(function(e){e.description = utils.arrangeString(e.description , nCharDescription);});
+
+                var model = { title: 'CLX',
+                    pagination: utils.getPagination(page, nperpage, favoriteAds.length),
+                    message: utils.getMessages(req),
+                    nCharDescription: nCharDescription,
+                    username: res.locals.user.username,
+                    annoucements: favoriteAds,
+                    annoucementsWithActivity: allFavorites.filter(function(e) { return e.activity == true; }),
+                    list_type : 'myFavorites',
+                    list_title: 'Os meus Favoritos',
+                    list_info : favoriteAds.length==0 ? 'Não tem anúncios na sua lista de Favoritos' : '' 
+                };
+                res.render('annoucement/list', model );
+                });
             });
-        });
+
+        } else{
+                var err = new Error('Acesso não permitido');
+                err.status = 403;
+                res.status(403);
+                res.render('error',{err: err});
+        }
     });
 
 
@@ -71,22 +76,34 @@ module.exports = function(app)
     /* GET annoucements of a specific user */
     annoucementsRouter.get('/user/:username', function(req, res) 
     {
-        var page = req.query.page || 1;
+        if(res.locals.user.username == req.param("username")){
 
-        db.Annoucement.getAllAnnoucementsByUsername(req.params.username, function(err, allAnnoucements)
-        {
-            if(err) req.flash('error','Obter lista de anúncios.');
+            var page = req.query.page || 1;
 
-            var model = { title: 'CLX',
-                pagination: utils.getPagination(page, nperpage, allAnnoucements.length),
-                message: utils.getMessages(req),
-                annoucements: allAnnoucements,
-                list_type : 'myAds',
-                list_title: 'Os meus anúncios',
-                list_info: allAnnoucements.length == 0 ? 'Não tem ainda qualquer anúncio criado' : '' 
-            };
-            res.render('annoucement/list', model );
-        });
+            db.Annoucement.getAllAnnoucementsByUsername(req.param("username") , function(err, allAnnoucements)
+            {
+                if(err) req.flash('error','Obter lista de anúncios.');
+
+                allAnnoucements.forEach(function(e){e.description = utils.arrangeString(e.description , nCharDescription);});
+
+                var model = { title: 'CLX',
+                    pagination: utils.getPagination(page, nperpage, allAnnoucements.length),
+                    message: utils.getMessages(req),
+                    nCharDescription: nCharDescription,
+                    annoucements: allAnnoucements,
+                    list_type : 'myAds',
+                    list_title: 'Os meus anúncios',
+                    list_info: allAnnoucements.length == 0 ? 'Não tem ainda qualquer anúncio criado' : '' 
+                };
+                res.render('annoucement/list', model );
+            });
+
+        } else{
+                var err = new Error('Acesso não permitido');
+                err.status = 403;
+                res.status(403);
+                res.render('error',{err: err});
+        }
     });
 
 
@@ -101,9 +118,12 @@ module.exports = function(app)
 
             var adsByCategory = allAnnoucements.filter(function(a) { return a._state == 'activo'});
 
+            adsByCategory.forEach(function(e){e.description = utils.arrangeString(e.description , nCharDescription);});
+
             var model = { title: 'CLX',
                 pagination: utils.getPagination(page, nperpage, adsByCategory.length),
                 message: utils.getMessages(req),
+                nCharDescription: nCharDescription,
                 annoucements: adsByCategory,
                 category_name: req.query.name,
                 category_id: req.query.id,
@@ -131,9 +151,12 @@ module.exports = function(app)
                                                                             (a.category == req.query.category);
                                                                         } );
 
+            searchResult.forEach(function(e){e.description = utils.arrangeString(e.description , nCharDescription);});
+
             var model = { title: 'CLX',
                 pagination: utils.getPagination(page, nperpage, searchResult.length),
                 message: utils.getMessages(req),
+                nCharDescription: nCharDescription,
                 annoucements: searchResult,
                 search_title: req.query.title,
                 search_locate: req.query.locate,
@@ -158,9 +181,12 @@ module.exports = function(app)
 
             var all_ads = allAnnoucements.filter(function(a) { return a._state == 'activo'});
 
+            all_ads.forEach(function(e){e.description = utils.arrangeString(e.description , nCharDescription);});
+
             var model = { title: 'CLX',
                 pagination: utils.getPagination(page, nperpage, all_ads.length),
                 message: utils.getMessages(req),
+                nCharDescription: nCharDescription,
                 annoucements: all_ads,
                 list_type: 'allAds',
                 list_title: 'Todos os anúncios', 
@@ -177,7 +203,10 @@ module.exports = function(app)
     annoucementsRouter.get('/new', function(req, res) 
     {
         if(!req.isAuthenticated()){
-            res.render('user/access-denied', {action: "Para inserir Anúncio deve estar logado"});
+                var err = new Error('Acesso não permitido. Para inserir Anúncio, o utilizador deve estar autenticado');
+                err.status = 403;
+                res.status(403);
+                res.render('error',{err: err});
         }
         
        db.Category.getAllCategories(function(err, allCatgs)
@@ -241,6 +270,10 @@ annoucementsRouter.post('/view/:id/newcomment', function(req, res)
         db.Comment.createNew(new db.Comment(null,req.param("id"), res.locals.user.username , newCommentText, null, new Date()), function(err,id){
             if(err) req.flash('error','Não foi possível registar novo comentário.');  
 
+            db.Followup.updateAnnoucementActivity_true(req.param("id"), function(err, id){
+                if(err) req.flash('error','Não foi possível registar Actividade no anúncio! Error: updateAnnoucementActivity_true');
+            });
+
             res.redirect("/annoucement/view/"+req.param("id"));
         });     
     } else if(typeComment_response){
@@ -248,10 +281,29 @@ annoucementsRouter.post('/view/:id/newcomment', function(req, res)
         var aux = "responseText_"+comment_id;
         //var aux2 = "responseText_";
         var responseText = req.body.responseText_;//var responseText = req.body.responseText_;
-        console.log("/////////////////////  -> responseText  e aux: "+responseText+" ; "+aux);
+        var responseTextFinal = "";
+
+        if(typeof(responseText) != 'string'){
+            for(var t in responseText){
+                if(responseText[t])
+                    if(!responseTextFinal){
+                        responseTextFinal = responseText[t];
+                    }else{ 
+                        req.flash('error','A resposta a comentário deve ser escrita apenas na respectiva caixa de texto!');
+                        break; 
+                        }
+                
+            }
+        }else{
+            responseTextFinal = responseText; 
+        }
         
-            db.Comment.setResponse(responseText, comment_id, function(err,id){
+            db.Comment.setResponse(responseTextFinal, comment_id, function(err,id){
             if(err) req.flash('error','Não foi possível registar a resposta a comentário.');  
+
+            db.Followup.updateAnnoucementActivity_true(req.param("id"), function(err, id){
+                if(err) req.flash('error','Não foi possível registar Actividade no anúncio! Error: updateAnnoucementActivity_true');
+            });
 
             res.redirect("/annoucement/view/"+req.param("id"));
         } );
@@ -263,9 +315,9 @@ annoucementsRouter.post('/view/:id/newcomment', function(req, res)
     /* GET annoucement detail. */
     annoucementsRouter.get('/view/:id', function(req, res) 
     {
-        var vote, isFollowing, comments=[], photos=[];
+        var vote, isFollowing, comments=[];
 
-        db.Annoucement.getById(req.params.id, function(err, annoucement)
+        db.Annoucement.getById(req.param("id"), function(err, annoucement)
         {
             if(err) req.flash('error','Não foi possível obter detalhe do anúncio.');
             
@@ -273,7 +325,7 @@ annoucementsRouter.post('/view/:id/newcomment', function(req, res)
                 isFollowing = (followup===undefined || followup==null?false:true);
             });
 
-            db.Followup.updateFollowupActivity(res.locals.user.username, annoucement.annouce_id, function(err, id){
+            db.Followup.updateFollowupActivity_false(res.locals.user.username, annoucement.annouce_id, function(err, id){
                 if(err) req.flash('error','Atualizar estado atividade do anúncio.');
             });
 
@@ -283,7 +335,7 @@ annoucementsRouter.post('/view/:id/newcomment', function(req, res)
                 comments = allComments;
                 comments.forEach(function(elem){
 
-                    console.log("**************>>>>> comment_response: "+elem.comment_response);
+                //    console.log("**************>>>>> comment_response: "+elem.comment_response);
                 //elem.creation_date = elem.creation_date.toISOString().replace('T', '\n').substr(0, 19);  //****************
                 });
 
@@ -292,15 +344,6 @@ annoucementsRouter.post('/view/:id/newcomment', function(req, res)
             db.Vote.getByUsername(annoucement.owner, res.locals.user.username, function(err, v){
                 if(err) req.flash('error','Obter votações.');
                 vote = v;
-            });
-
-            console.log('ANTES DAS FOTOS');
-
-            db.Photo.getAllByAnnoucement_id(annoucement.annouce_id, function(err, allPhotos){
-                if(err) req.flash('error','Obter fotos.');
-                photos = allPhotos;
-                console.log('FOTOS EH EH');
-                console.log(photos);
             });
 
             db.Category.getById(annoucement.category, function(err, category)
@@ -316,15 +359,9 @@ annoucementsRouter.post('/view/:id/newcomment', function(req, res)
                     isFollowing: isFollowing,
                     annoucement: annoucement,
                     comments: comments,
-                    photos: photos,
                     getCommentByIndex: function(arr, idx){console.log("************************ "+arr[idx].id); return function (){ return arr[idx];};}, // closure for current array index of comments
                     user_owner: user};
-                    if (model.photos != undefined) {
-                        model.photos.forEach(function(i) {
-                            console.log(i);});
-                    }
 
-                    //console.log(photos);
                     res.render('annoucement/view', model );
 
                 });
@@ -343,9 +380,6 @@ annoucementsRouter.post('/view/:id/newcomment', function(req, res)
         var locate = req.body.locate;
         var price = req.body.price;
         var annoucement = new db.Annoucement(null, title, description, res.locals.user.username, category, locate, price, null, undefined);
-
-        console.log('FILE ###');
-        console.log(req.files);
 
         if(title == "") {
             req.flash("error", "Não foi possível criar o anúncio.");
@@ -366,12 +400,16 @@ annoucementsRouter.post('/view/:id/newcomment', function(req, res)
         });
     });
 
+
     //GET Edit annoucement
     annoucementsRouter.get('/edit/:id', function(req, res) 
     {
 
         if(!req.isAuthenticated()){
-            res.render('user/access-denied', {action: "O utilizador tem de estar autenticado!"});
+                var err = new Error('Acesso não permitido. Para editar anuncio, o utilizador tem de estar autenticado!');
+                err.status = 403;
+                res.status(403);
+                res.render('error',{err: err});
         }
 
         db.Annoucement.getById(req.param("id"), function(err, annoucement){
@@ -380,25 +418,37 @@ annoucementsRouter.post('/view/:id/newcomment', function(req, res)
                 res.redirect('/annoucement/view/' + req.param("id"));
             }
 
-            db.Category.getAllCategories(function(err, allCategories)
-            {
-                if(err) req.flash("error", "Não foi possível obter a lista de categorias.");
+            if(res.locals.user.username == annoucement.owner){
 
-                var model = { title: 'CLX',
-                categories: allCategories,
-                message: utils.getMessages(req),
-                annoucement: annoucement };
+                db.Category.getAllCategories(function(err, allCategories)
+                {
+                    if(err) req.flash("error", "Não foi possível obter a lista de categorias.");
 
-                res.render('annoucement/edit', model );
-            });
+                    var model = { title: 'CLX',
+                    categories: allCategories,
+                    message: utils.getMessages(req),
+                    annoucement: annoucement };
+
+                    res.render('annoucement/edit', model );
+                });
+
+            } else{
+                var err = new Error('Acesso não permitido.');
+                err.status = 403;
+                res.status(403);
+                res.render('error',{err: err});
+            }
+
         });
     });
 
+
     //POST Edit annoucement
-    annoucementsRouter.post('/edit/:id', function editannoucement(req, res)
+    annoucementsRouter.post('/edit/:id', function(req, res)
     {
 
-        db.Annoucement.getById(req.params.id, function(err, annoucement){
+        db.Annoucement.getById(req.param("id"), function(err, annoucement){
+
             if(req.body.title == "" ) {
                 req.flash("warning", "Não é possível alterar o anúncio. Verifique os valores introduzidos.")
                 return res.render('annoucement/edit', { annoucement: annoucement,
@@ -409,18 +459,9 @@ annoucementsRouter.post('/view/:id/newcomment', function(req, res)
             annoucement.title = req.body.title;
             annoucement.description = req.body.description;
             annoucement.category = req.body.category;
+            annoucement.locate = req.body.locate;
+            annoucement.price = req.body.price;
 
-            //-------------------------------------------------------
-            //TODO: create new comment with changes made
-
-            var newCommentText = "Anúncio alterado."
-
-            db.Comment.createNew(new db.Comment(null,req.params.id, res.locals.user.username , newCommentText, null, new Date()), function(err,id){
-                if(err) return res.status(500).send("Erro ao adicionar Comentario");  
-            }); 
-            //-------------------------------------------------------
-
-            db.Followup.updateAnnoucementActivity(annoucement.annouce_id, function(err, id){});
 
             db.Annoucement.edit(annoucement, function (err, id) {
                 if(err) {
@@ -430,159 +471,49 @@ annoucementsRouter.post('/view/:id/newcomment', function(req, res)
                         categories: this.allCategories });
                 }
 
+            db.Followup.updateAnnoucementActivity_true(req.param("id"), function(err, id){
+                if(err) req.flash('error','Não foi possível registar Actividade no anúncio! Error: updateAnnoucementActivity_true');
+            });
+
                 res.redirect('/annoucement/view/' + id);
             });
         });     
     });
 
-    //FOTOS
-
-    //GET edit fotos annoucement
-    annoucementsRouter.get('/photo/:id', function(req, res) 
-    {
-        if(!req.isAuthenticated()){
-            res.render('user/access-denied', {action: "O utilizador tem de estar autenticado!"});
-        }
-
-        db.Annoucement.getById(req.params.id, function(err, annoucement){
-            if(err){
-                req.flash("error", "Não foi possível obter o anúncio a alterar.");
-                res.redirect('/annoucement/view/' + req.param("id"));
-            }
-
-            db.Category.getAllCategories(function(err, allCategories)
-            {
-                if(err) req.flash("error", "Não foi possível obter a lista de categorias.");
-
-                db.Photo.getAllByAnnoucement_id(annoucement.annouce_id, function(err, allPhotos){
-                    if(err) req.flash('error','Obter fotos.');
-
-                    console.log('ALL FOTOS');
-                    console.log(allPhotos);
-
-                    var model = { title: app.locals.title,
-                    categories: allCategories,
-                    message: utils.getMessages(req),
-                    annoucement: annoucement,
-                    photos: allPhotos };
-
-                    res.render('annoucement/photo', model );
-                });
-            });
-        });
-    });
-
-
-
-
-
-    //POST PHOTOS
-    annoucementsRouter.post('/photo/:id',  uploading.array('cska', 10), function postPhotos(req, res,next){
-        //var model = {};
-        var model = {title: "",
-                categories: [],
-                message: "",
-                photos : undefined,
-                annoucement: ""};
-        var oldphotos;
-
-        if(!req.isAuthenticated() || !user.can('access manager')){
-            res.render('user/access-denied', {action: "Tem de estar autenticado!"});
-        }
-
-        db.Annoucement.getById(req.params.id, function (err, annoucement){
-            if(req.body.title == "" ) {
-                req.flash("warning", "Não é possível alterar as fotos do anúncio. Verifique os valores introduzidos.")
-                return res.redirect("/annoucement/view/"+req.params.id);
-            }
-
-            db.Photo.getAllByAnnoucement_id(annoucement.annouce_id, function(err, allPhotos){
-                if(err) req.flash('error','Obter fotos.');
-
-                model.title = app.locals.title;
-                model.categories = allCategories;
-                model.message = utils.getMessages(req);
-                model.annoucement = annoucement;
-                model.photos = allPhotos;
-                oldphotos = allPhotos;
-
-
-
-                if (req.body.action == 'upload'){
-                    var photolist = req.files.map(function(ele){
-                        return ele.filename;
-                    }); 
-                    var newCommentText = "Fotos adicionadas";
-
-
-                    if (oldphotos != undefined){
-                        oldphotos.forEach(function(photo){
-                            photolist.push(photo);
-                        });
-
-                        model.photos = photolist;
-                        db.Photo.edit(new db.Photo(req.params.id, photolist), function (err,id){
-                            if(err) return res.status(500).send("Erro actualizar fotos");  
-                            console.log(model);
-                            model.photos = photolist;
-                            res.render('annoucement/photo', model );
-                        });
-                    }
-                    else {
-                        db.Photo.createNew(new db.Photo(req.params.id, photolist), function (err,id){
-                            if(err) return res.status(500).send("Erro actualizar fotos");
-                            console.log(model);
-                            model.photos = photolist;
-                            res.render('annoucement/photo', model );
-                        });
-                    }            
-                }//é p apagar fotos
-                else {
-                    var photolist = req.body.foto;
-
-                    if(typeof(photolist) ==  'string'){
-                        oldphotos.pop(photolist);;
-
-                    }else {
-                        photolist.forEach(function(photo){
-                            oldphotos.pop(photo);
-                        })
-                    }    
-
-                    db.Photo.edit(new db.Photo(req.params.id, oldphotos), function (err,id){
-                        if(err) return res.status(500).send("Erro actualizar fotos");  
-                        console.log(model);
-                        model.photos = oldphotos;
-                        res.render('annoucement/photo', model );
-                    });
-                }
-            });
-        });
-    });
-
-    
-
-
-    
-
-
-
     //GET Close annoucement
     annoucementsRouter.get('/close/:id', function(req, res) 
     {
 
-        if(!req.isAuthenticated() || !user.can('access manager')){
-            res.render('user/access-denied', {action: "Tem de estar autenticado!"});
+        if(!req.isAuthenticated()){
+            var err = new Error('Acesso não permitido. O utilizador tem de estar autenticado!');
+            err.status = 403;
+            res.status(403);
+            res.render('error',{err: err});
         }
 
         db.Annoucement.getById(req.param("id"), function(err, annoucement){
-            var model = { 
-                title: 'CLX',
-                comment: new db.Comment(),
-                message: utils.getMessages(req),
-                annoucement: annoucement 
-            };
-            res.render('annoucement/close', model );
+            if(err){
+                req.flash("error", "Não foi possível obter o anúncio.");
+                res.redirect('/annoucement/view/' + req.param("id"));
+            }
+
+            if(res.locals.user.username == annoucement.owner){
+
+                var model = { 
+                    title: 'CLX',
+                    comment: new db.Comment(),
+                    message: utils.getMessages(req),
+                    annoucement: annoucement 
+                };
+                res.render('annoucement/close', model );
+
+            } else{
+                var err = new Error('Acesso não permitido.');
+                err.status = 403;
+                res.status(403);
+                res.render('error',{err: err});
+            }
+
         });
         
     });
@@ -593,13 +524,16 @@ annoucementsRouter.post('/view/:id/newcomment', function(req, res)
 
         
         var annoucement = req.body.annoucement;
-        db.Followup.updateAnnoucementActivity(req.param("id"), function(err, id){});
 
         db.Annoucement.changeStateById(req.param("id"), 'cancelado', function (err, id) {
             if(err) {
                 req.flash("error", "Não é possível cancelar o anúncio.")
               //  return res.render('annoucement/', { annoucement: annoucement, message: utils.getMessages(req)});
             }
+
+            db.Followup.updateAnnoucementActivity_true(req.param("id"), function(err, id){
+                if(err) req.flash('error','Não foi possível registar Actividade no anúncio! Error: updateAnnoucementActivity_true');
+            });
 
             res.redirect('/annoucement/user/'+res.locals.user.username);
         });
@@ -612,20 +546,37 @@ annoucementsRouter.post('/view/:id/newcomment', function(req, res)
     annoucementsRouter.get('/activate/:id', function(req, res) 
     {
 
-        if(!req.isAuthenticated() || !user.can('access manager')){
-            res.render('user/access-denied', {action: "Tem de estar autenticado!"});
+        if(!req.isAuthenticated()){
+            var err = new Error('Acesso não permitido. O utilizador tem de estar autenticado!');
+            err.status = 403;
+            res.status(403);
+            res.render('error',{err: err});
         }
 
         db.Annoucement.getById(req.param("id"), function(err, annoucement){
-            var model = { 
-                title: 'CLX',
-                comment: new db.Comment(),
-                message: utils.getMessages(req),
-                annoucement: annoucement 
-            };
-            res.render('annoucement/activate', model );
-        });
-        
+            if(err){
+                req.flash("error", "Não foi possível obter o anúncio.");
+                res.redirect('/annoucement/view/' + req.param("id"));
+            }
+
+            if(res.locals.user.username == annoucement.owner){
+
+                var model = { 
+                    title: 'CLX',
+                    comment: new db.Comment(),
+                    message: utils.getMessages(req),
+                    annoucement: annoucement 
+                };
+                res.render('annoucement/activate', model );
+
+            } else{
+                var err = new Error('Acesso não permitido.');
+                err.status = 403;
+                res.status(403);
+                res.render('error',{err: err});
+            }
+            
+        });  
     });
 
     //POST Activate annoucement
@@ -634,13 +585,16 @@ annoucementsRouter.post('/view/:id/newcomment', function(req, res)
 
         
         var annoucement = req.body.annoucement;
-        db.Followup.updateAnnoucementActivity(req.param("id"), function(err, id){});
 
         db.Annoucement.changeStateById(req.param("id"), 'activo', function (err, id) {
             if(err) {
                 req.flash("error", "Não é possível activar o anúncio.")
               //  return res.render('annoucement/', { annoucement: annoucement, message: utils.getMessages(req)});
             }
+
+            db.Followup.updateAnnoucementActivity_true(req.param("id"), function(err, id){
+                if(err) req.flash('error','Não foi possível registar Actividade no anúncio! Error: updateAnnoucementActivity_true');
+            });
 
             res.redirect('/annoucement/user/'+res.locals.user.username);
         });
@@ -659,9 +613,12 @@ annoucementsRouter.post('/view/:id/newcomment', function(req, res)
 
             var all_ads = allAnnoucements.filter(function(a) { return a._state == 'activo'});
 
+            all_ads.forEach(function(e){e.description = utils.arrangeString(e.description , nCharDescription);});
+
             var model = { title: 'CLX',
             pagination: utils.getPagination(page, nperpage, allAnnoucements.length),
             message: utils.getMessages(req),
+            nCharDescription: nCharDescription,
             annoucements: all_ads,
             list_type: 'allAds',
             list_title: 'Todos os anúncios', 
@@ -671,5 +628,7 @@ annoucementsRouter.post('/view/:id/newcomment', function(req, res)
     });
     });
 
-app.use("/annoucement", annoucementsRouter);
+
+    app.use("/annoucement", annoucementsRouter);
+
 }

@@ -1,8 +1,6 @@
 
 var config = require(require('path').resolve(__dirname, "..", "config.js"));
 var pg = require("pg");
-var esk = require(require('path').resolve(__dirname));
-console.log(esk);
 
 module.exports.SelectAll = function(query, createElem, cb)
 {
@@ -13,7 +11,6 @@ module.exports.SelectAll = function(query, createElem, cb)
 
 			var elems = result.rows.map(createElem);
 			done();
-			console.log(esk);
 			cb(null, elems);
 		});
 	});

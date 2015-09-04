@@ -34,14 +34,14 @@ module.exports.Followup.getByUserAndAnnoucement = function(userid, annoucementid
 		cb);
 };
 
-module.exports.Followup.updateFollowupActivity = function(userid, annoucementid, cb)
+module.exports.Followup.updateFollowupActivity_false = function(userid, annoucementid, cb)
 {
 	db.ExecuteQuery("UPDATE followup SET activity = false WHERE user_id=$1 and annoucement_id=$2",
 		[userid, annoucementid],
 		function(err) { cb(err, userid) });
 };
 
-module.exports.Followup.updateAnnoucementActivity = function(annoucementid, cb)
+module.exports.Followup.updateAnnoucementActivity_true = function(annoucementid, cb)
 {
 	db.ExecuteQuery("UPDATE followup SET activity = true WHERE annoucement_id=$1",
 		[annoucementid],

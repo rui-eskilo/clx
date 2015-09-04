@@ -19,6 +19,22 @@
 
     <link href="/stylesheets/style.css" rel="stylesheet">
 
+
+    <script type="text/javascript">
+        function blinkId(id) {
+            var i = document.getElementById(id);
+            if(i.style.visibility=='hidden') {
+                i.style.visibility='visible';
+            } else {
+                i.style.visibility='hidden';
+            }
+            setTimeout("blinkId('"+id+"')",1000);
+            return true;
+        }
+    </script>
+
+
+
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>

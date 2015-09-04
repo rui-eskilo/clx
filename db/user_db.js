@@ -70,10 +70,10 @@ module.exports.User.changePassword = function(user, cb)
 };
 
 
-module.exports.User.updateRating = function(user, cb)
+module.exports.User.updateRating = function(username, somatory, users, cb)
 {
-  db.ExecuteQuery("UPDATE _user SET votes_somatory = $2 , votes_users = $3 WHERE username = $1",
-    [user.username, Number(user.votes_somatory), Number(user.votes_users)],
+  db.ExecuteQuery("UPDATE _user SET votes_somatory = votes_somatory + $2 , votes_users =  votes_users + $3 WHERE username = $1",
+    [username, Number(somatory), Number(users)],
     cb
   );
 /*
