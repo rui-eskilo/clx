@@ -8,6 +8,7 @@ DROP TABLE Category;
 DROP TABLE _session;
 DROP TABLE _user;
 DROP TABLE rating;
+DROP TABLE Photos;
 
 
 CREATE TABLE _user(
@@ -86,4 +87,10 @@ CREATE TABLE favorite(
 	username character varying(10) NOT NULL references _user(username),
 	annoucement_id character varying(50) NOT NULL references Annoucement(annouce_id),
   CONSTRAINT pk_favorite PRIMARY KEY (username, annoucement_id)
+);
+
+CREATE TABLE Photos(
+  annoucem_id character varying(50) NOT NULL,
+  photos character varying(50)[],  
+  CONSTRAINT pk_Photos PRIMARY KEY (annoucem_id)
 );

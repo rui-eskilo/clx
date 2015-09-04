@@ -1,1 +1,0 @@
-createdb clx_db

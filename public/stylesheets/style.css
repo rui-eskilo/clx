@@ -44,5 +44,20 @@ textarea[readonly="readonly"]{
 	border-left:100px; /* padding-left: 100px; */
 }
 
+.list-image{
+	width:80px;
+	height:80px;
+	float: left;
+	padding: 5px;
+}
 
+.list-image2{
+	width:80px;
+	height:80px;
+	margin-right: 20px;
+	margin-top: 40px;
+}
 
+.margin-header{
+	margin-top: 40px;
+}

@@ -7,6 +7,7 @@ var Vote = require('./vote_db').Vote;
 var Rating = require('./rating_db').Rating;
 var Favorite = require('./favorite_db').Favorite;
 var Followup = require('./followup').Followup;
+var Photo = require('./photo_db').Photo;
 
 module.exports = {  Annoucement: Annoucement,
 					User: User,
@@ -16,8 +17,9 @@ module.exports = {  Annoucement: Annoucement,
 					Vote: Vote,
 					Rating: Rating,
 					Favorite: Favorite,
-					Followup: Followup
+					Followup: Followup,
+					Photo : Photo
 				};
 
 
-require('./fillWithSampleData')(Annoucement, User, Comment, Category, Vote, Rating, Favorite, Followup);
+require('./fillWithSampleData')(Annoucement, User, Comment, Category, Vote, Rating, Favorite, Followup, Photo);

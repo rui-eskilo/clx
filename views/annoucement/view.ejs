@@ -19,8 +19,28 @@
       </form>
       <!-- Followup button - END -->
   <% } %>
-  <form role="form" class="form-horizontal">
 
+  <!-- FOTOS -->
+
+
+
+        <div>
+        <% if(photos != undefined) { %>
+          <% photos.forEach(function(i) { %>
+            <div>
+                <img class="list-image" src="/uploads/<%= i %>" title="Imagem <%= i%>" alt="" >
+            </div>
+
+          <% }) %>
+        <% } %>
+        </div>
+        </div>
+        <br>
+        <p>
+
+ 
+
+  <form role="form" class="form-horizontal">
     <div class="form-group">
       <label for="txtTitle" class="col-sm-2 control-label">Título</label>
       <div class="col-sm-10">
@@ -146,5 +166,6 @@
   <!-- Comment section - END -->  
 
 </div>
+
 
 <% include ./../layout/bottom %>

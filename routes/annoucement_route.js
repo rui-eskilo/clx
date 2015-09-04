@@ -1,6 +1,13 @@
 var config = require(require('path').resolve(__dirname, "../", "config.js"));
 var utils = require(require('path').resolve(__dirname, "../", "utils.js"));
 var user = require('./../userAuthentication.js').roles;
+var multer = require('multer');
+var path = require('path');
+
+var dir = path.join('public', 'uploads');
+//filesize in bytes, 1024*1024*5 5242880 5MB, 10 ficheiros
+var uploading = multer({dest: dir,
+                        limits: { fileSize : 5242880, files: 10} });
 
 
 module.exports = function(app) 
@@ -66,7 +73,7 @@ module.exports = function(app)
     {
         var page = req.query.page || 1;
 
-        db.Annoucement.getAllAnnoucementsByUsername(req.param("username") , function(err, allAnnoucements)
+        db.Annoucement.getAllAnnoucementsByUsername(req.params.username, function(err, allAnnoucements)
         {
             if(err) req.flash('error','Obter lista de anúncios.');
 
@@ -256,9 +263,9 @@ annoucementsRouter.post('/view/:id/newcomment', function(req, res)
     /* GET annoucement detail. */
     annoucementsRouter.get('/view/:id', function(req, res) 
     {
-        var vote, isFollowing, comments=[];
+        var vote, isFollowing, comments=[], photos=[];
 
-        db.Annoucement.getById(req.param("id"), function(err, annoucement)
+        db.Annoucement.getById(req.params.id, function(err, annoucement)
         {
             if(err) req.flash('error','Não foi possível obter detalhe do anúncio.');
             
@@ -287,6 +294,15 @@ annoucementsRouter.post('/view/:id/newcomment', function(req, res)
                 vote = v;
             });
 
+            console.log('ANTES DAS FOTOS');
+
+            db.Photo.getAllByAnnoucement_id(annoucement.annouce_id, function(err, allPhotos){
+                if(err) req.flash('error','Obter fotos.');
+                photos = allPhotos;
+                console.log('FOTOS EH EH');
+                console.log(photos);
+            });
+
             db.Category.getById(annoucement.category, function(err, category)
             {
                 if(err) req.flash('error','Obter descritivo da categoria.');
@@ -300,9 +316,15 @@ annoucementsRouter.post('/view/:id/newcomment', function(req, res)
                     isFollowing: isFollowing,
                     annoucement: annoucement,
                     comments: comments,
+                    photos: photos,
                     getCommentByIndex: function(arr, idx){console.log("************************ "+arr[idx].id); return function (){ return arr[idx];};}, // closure for current array index of comments
                     user_owner: user};
+                    if (model.photos != undefined) {
+                        model.photos.forEach(function(i) {
+                            console.log(i);});
+                    }
 
+                    //console.log(photos);
                     res.render('annoucement/view', model );
 
                 });
@@ -322,7 +344,7 @@ annoucementsRouter.post('/view/:id/newcomment', function(req, res)
         var price = req.body.price;
         var annoucement = new db.Annoucement(null, title, description, res.locals.user.username, category, locate, price, null, undefined);
 
-        console.log("FILE ###");
+        console.log('FILE ###');
         console.log(req.files);
 
         if(title == "") {
@@ -376,7 +398,7 @@ annoucementsRouter.post('/view/:id/newcomment', function(req, res)
     annoucementsRouter.post('/edit/:id', function editannoucement(req, res)
     {
 
-        db.Annoucement.getById(req.param("id"), function(err, annoucement){
+        db.Annoucement.getById(req.params.id, function(err, annoucement){
             if(req.body.title == "" ) {
                 req.flash("warning", "Não é possível alterar o anúncio. Verifique os valores introduzidos.")
                 return res.render('annoucement/edit', { annoucement: annoucement,
@@ -393,7 +415,7 @@ annoucementsRouter.post('/view/:id/newcomment', function(req, res)
 
             var newCommentText = "Anúncio alterado."
 
-            db.Comment.createNew(new db.Comment(null,req.param("id"), res.locals.user.username , newCommentText, null, new Date()), function(err,id){
+            db.Comment.createNew(new db.Comment(null,req.params.id, res.locals.user.username , newCommentText, null, new Date()), function(err,id){
                 if(err) return res.status(500).send("Erro ao adicionar Comentario");  
             }); 
             //-------------------------------------------------------
@@ -418,12 +440,11 @@ annoucementsRouter.post('/view/:id/newcomment', function(req, res)
     //GET edit fotos annoucement
     annoucementsRouter.get('/photo/:id', function(req, res) 
     {
-
         if(!req.isAuthenticated()){
             res.render('user/access-denied', {action: "O utilizador tem de estar autenticado!"});
         }
 
-        db.Annoucement.getById(req.param("id"), function(err, annoucement){
+        db.Annoucement.getById(req.params.id, function(err, annoucement){
             if(err){
                 req.flash("error", "Não foi possível obter o anúncio a alterar.");
                 res.redirect('/annoucement/view/' + req.param("id"));
@@ -433,17 +454,116 @@ annoucementsRouter.post('/view/:id/newcomment', function(req, res)
             {
                 if(err) req.flash("error", "Não foi possível obter a lista de categorias.");
 
-                var model = { title: app.locals.title,
-                categories: allCategories,
-                message: utils.getMessages(req),
-                annoucement: annoucement };
+                db.Photo.getAllByAnnoucement_id(annoucement.annouce_id, function(err, allPhotos){
+                    if(err) req.flash('error','Obter fotos.');
 
-                res.render('annoucement/photo', model );
+                    console.log('ALL FOTOS');
+                    console.log(allPhotos);
+
+                    var model = { title: app.locals.title,
+                    categories: allCategories,
+                    message: utils.getMessages(req),
+                    annoucement: annoucement,
+                    photos: allPhotos };
+
+                    res.render('annoucement/photo', model );
+                });
             });
         });
     });
 
-    //FALTA O POST
+
+
+
+
+    //POST PHOTOS
+    annoucementsRouter.post('/photo/:id',  uploading.array('cska', 10), function postPhotos(req, res,next){
+        //var model = {};
+        var model = {title: "",
+                categories: [],
+                message: "",
+                photos : undefined,
+                annoucement: ""};
+        var oldphotos;
+
+        if(!req.isAuthenticated() || !user.can('access manager')){
+            res.render('user/access-denied', {action: "Tem de estar autenticado!"});
+        }
+
+        db.Annoucement.getById(req.params.id, function (err, annoucement){
+            if(req.body.title == "" ) {
+                req.flash("warning", "Não é possível alterar as fotos do anúncio. Verifique os valores introduzidos.")
+                return res.redirect("/annoucement/view/"+req.params.id);
+            }
+
+            db.Photo.getAllByAnnoucement_id(annoucement.annouce_id, function(err, allPhotos){
+                if(err) req.flash('error','Obter fotos.');
+
+                model.title = app.locals.title;
+                model.categories = allCategories;
+                model.message = utils.getMessages(req);
+                model.annoucement = annoucement;
+                model.photos = allPhotos;
+                oldphotos = allPhotos;
+
+
+
+                if (req.body.action == 'upload'){
+                    var photolist = req.files.map(function(ele){
+                        return ele.filename;
+                    }); 
+                    var newCommentText = "Fotos adicionadas";
+
+
+                    if (oldphotos != undefined){
+                        oldphotos.forEach(function(photo){
+                            photolist.push(photo);
+                        });
+
+                        model.photos = photolist;
+                        db.Photo.edit(new db.Photo(req.params.id, photolist), function (err,id){
+                            if(err) return res.status(500).send("Erro actualizar fotos");  
+                            console.log(model);
+                            model.photos = photolist;
+                            res.render('annoucement/photo', model );
+                        });
+                    }
+                    else {
+                        db.Photo.createNew(new db.Photo(req.params.id, photolist), function (err,id){
+                            if(err) return res.status(500).send("Erro actualizar fotos");
+                            console.log(model);
+                            model.photos = photolist;
+                            res.render('annoucement/photo', model );
+                        });
+                    }            
+                }//é p apagar fotos
+                else {
+                    var photolist = req.body.foto;
+
+                    if(typeof(photolist) ==  'string'){
+                        oldphotos.pop(photolist);;
+
+                    }else {
+                        photolist.forEach(function(photo){
+                            oldphotos.pop(photo);
+                        })
+                    }    
+
+                    db.Photo.edit(new db.Photo(req.params.id, oldphotos), function (err,id){
+                        if(err) return res.status(500).send("Erro actualizar fotos");  
+                        console.log(model);
+                        model.photos = oldphotos;
+                        res.render('annoucement/photo', model );
+                    });
+                }
+            });
+        });
+    });
+
+    
+
+
+    
 
 
 

@@ -1,7 +1,7 @@
 //INSERT INTO Annoucement(title, description, owner, category, locate, state) VALUES('Primeiro anuncio','Primeiro anuncio descriçao','Rui','Outros','Lisboa','activo');
 
 
-module.exports = function(Annoucement, User, Comment, Category, Vote, Rating){
+module.exports = function(Annoucement, User, Comment, Category, Vote, Rating, Photos){
 
 var ratings = [
     new Rating(1),
@@ -53,7 +53,7 @@ var ratings = [
  ];
 
 
-
+var photos = [];
 
 Rating.getAllRatings(function(err, dbratings)
 {

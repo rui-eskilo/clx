@@ -7,7 +7,7 @@ var bodyParser = require('body-parser');
 var userAuth = require('./userAuthentication');
 var nodeUuid = require('node-uuid');
 var flash = require('connect-flash');  //var flash = require('req-flash');
-var multer = require('multer');
+//  var multer = require('multer');
 
 
 
@@ -28,10 +28,11 @@ app.use(require('express-session')({ secret: 'ThyZ is a big secret!: cat', resav
 app.use(require('passport').initialize());
 app.use(require('passport').session());
 app.use(flash());
-console.log(__dirname+'\\'+ 'public'+'\\'+'uploads');
-//app.use(multer({dest: path.join(__dirname, 'uploads') }));
+//console.log(__dirname+'\\'+ 'public'+'\\'+'uploads');
+//var destupl = path.join(__dirname, '/public/uploads/')
+//app.use(multer({dest: destupl}));
 
-app.locals.title = "BENFICA";
+app.locals.title = "BENFICA ";
 
 app.use(function(req, res, next) {
   var reqUrl = req.url;
