@@ -30,6 +30,27 @@
   <% } %>
   <form role="form" class="form-horizontal">
 
+  <!-- FOTOS -->
+
+
+
+        <div>
+        <% if(photos != undefined) { %>
+          <% photos.forEach(function(i) { %>
+            <div>
+                <img class="list-image" src="/uploads/<%= i %>" title="Imagem <%= i%>" alt="" >
+            </div>
+
+          <% }) %>
+        <% } %>
+        </div>
+        </div>
+        <br>
+        <p>
+
+ 
+
+  <form role="form" class="form-horizontal">
     <div class="form-group">
       <label for="txtTitle" class="col-sm-2 control-label">Título</label>
       <div class="col-sm-10">
@@ -101,6 +122,7 @@
             <a href="/annoucement/activate/<%=annoucement.annouce_id%>" class="btn btn-success" ><img class="icon-image" src="/images/active.png" alt="">&nbsp Activar o anúncio</a>
         <% } %>
 
+        <a href="/annoucement/photo/<%=annoucement.annouce_id%>" class="btn btn-success" >Gerir fotos</a>
 
       <%} else {%>
       
@@ -114,20 +136,20 @@
                 <label for="user_salesman_rating" placeholder="class">total de votações: <%=user_owner.votes_users%> </label>
               </div>
 
-            <div class="col-sm-5">
-                <div class="dropdown">
-                  <select id="Rating" name="value_voted" class="btn btn-default">
-                    <option>Seleccione...</option>
-                    <% ratings.forEach(function(r) { %>
-                    <option value="<%= r.val %>"><%= r.val %></option>
-                    <% }) %>
-                  </select>
-                  <button type="submit" name="voted" value="voted_buttom" control-label><img src="/images/vote-icon.png" alt="" style="width:30px;height:30px">Votar</button> 
-                </div>
-            </div>
+<div class="col-sm-5">
+    <div class="dropdown">
+      <select id="Rating" name="value_voted" class="btn btn-default">
+        <option>Seleccione...</option>
+        <% ratings.forEach(function(r) { %>
+        <option value="<%= r.val %>"><%= r.val %></option>
+        <% }) %>
+      </select>
+      <button type="submit" name="voted" value="voted_buttom" control-label><img src="/images/vote-icon.png" alt="" style="width:30px;height:30px">Votar</button> 
+    </div>
+</div>
 
 
-          </div>
+        </div>
 
 
             

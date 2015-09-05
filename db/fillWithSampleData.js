@@ -1,7 +1,7 @@
 //INSERT INTO Annoucement(title, description, owner, category, locate, state) VALUES('Primeiro anuncio','Primeiro anuncio descriçao','Rui','Outros','Lisboa','activo');
 
 
-module.exports = function(Annoucement, User, Comment, Category, Vote, Rating){
+module.exports = function(Annoucement, User, Comment, Category, Vote, Rating, Photos){
 
 var ratings = [
     new Rating(1),
@@ -28,7 +28,7 @@ var ratings = [
  var annoucements = [
     new Annoucement(null, 'Mesa de centro (Rui)','anuncio 1 descriçao ',users[1].username,categories[4].id,'Cabeço Velho','30€', new Date(), 'activo'),
     new Annoucement(null, 'Vendo carro completamente artilhado','anuncio 2 descriçao ',users[0].username,categories[2].id,'Zambujeira do Mar','100,50e', new Date(), 'activo'),
-    new Annoucement(null, 'Vendo SEGA megadrive (Rui)','anuncio 3 descriçao com mais de 64 caracteres ................64xxxx70',users[1].username,categories[3].id,'Idanha-a-Nova','10€', new Date(), 'activo'),
+    new Annoucement(null, 'Vendo SEGA megadrive (Rui)','anuncio 3 descriçao ',users[1].username,categories[3].id,'Idanha-a-Nova','10€', new Date(), 'activo'),
     new Annoucement(null, 'Vendo o bikini da minha prima','anuncio 4 descriçao ',users[0].username,categories[4].id,'Lisboa','100,50e', new Date(), 'activo'),
     new Annoucement(null, 'Rebobinador de disquetes (Rui)','anuncio 5 descriçao ',users[1].username,categories[1].id,'Bragança','30€', new Date(), 'activo'),
     new Annoucement(null, 'coleção de óculos do Pedro Abrunhosa','anuncio 6 descriçao ',users[0].username,categories[0].id,'Beja','100,50e', new Date(), 'activo'),
@@ -53,7 +53,7 @@ var ratings = [
  ];
 
 
-
+var photos = [];
 
 Rating.getAllRatings(function(err, dbratings)
 {
