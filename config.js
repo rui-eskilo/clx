@@ -15,7 +15,7 @@ var configs = {
         },
         getNItemsPerPage: function()
         {
-            return 3;
+            return 5;
         },
         getNbrAnnoucementsAtHomepage: function()
         {

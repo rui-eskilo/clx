@@ -28,7 +28,7 @@ passport.use(new LocalStrategy(
   ));
 
 passport.serializeUser(function(user, done) {
-      console.log("++++++++++++++++ serializeUser ++++++++++++++++++++:"+user.username);
+  console.log("++++++++++++++++ serializeUser ++++++++++++++++++++:"+user.username);
   done(null, user.username);
 });
 
@@ -50,7 +50,7 @@ module.exports = function(app)
 
   app.use(function(req, res, next){
     res.locals.user = req.user || new db.User();
-  res.locals.showPass = req.showPass || false;
+    res.locals.showPass = req.showPass || false;
     next();
   });
 

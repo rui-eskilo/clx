@@ -574,9 +574,13 @@ annoucementsRouter.post('/view/:id/newcomment', function(req, res)
                 model.photos = allPhotos;
                 oldphotos = allPhotos;
 
+                console.log('FOTOS INICIO');
+                console.log(oldphotos);
+
 
 
                 if (req.body.action == 'upload'){
+                    console.log('UPLOAD');
                     var photolist = req.files.map(function(ele){
                         return ele.filename;
                     }); 
@@ -608,14 +612,26 @@ annoucementsRouter.post('/view/:id/newcomment', function(req, res)
                 else {
                     var photolist = req.body.foto;
 
+                        console.log('OLD FOTOS INICIO');
+                        console.log(oldphotos);
+
+
                     if(typeof(photolist) ==  'string'){
-                        oldphotos.pop(photolist);;
+                        console.log('FOTO TO REMOVE');
+                        console.log(photolist);
+                        oldphotos.remove(photolist);;
 
                     }else {
                         photolist.forEach(function(photo){
-                            oldphotos.pop(photo);
+                            console.log('FOTO TO REMOVE');
+                            console.log(photolist);
+                            oldphotos.remove(photo);
                         })
-                    }    
+                    }   
+
+
+                        console.log('OLD FOTOS FIM');
+                        console.log(oldphotos); 
 
                     db.Photo.edit(new db.Photo(req.params.id, oldphotos), function (err,id){
                         if(err) return res.status(500).send("Erro actualizar fotos");  
