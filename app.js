@@ -42,15 +42,11 @@ app.use(function(req, res, next) {
 userAuth(app);
 
 var routes = require('./routes/index');
-//var how = require('./routes/how');
 require('./routes/passRecovery_route')(app);
 require('./routes/annoucement_route')(app);
 require('./routes/user_route')(app);
 require('./routes/about_route')(app);
-//require('./routes/dashboard_route')(app);
 
-
-//app.use('/how', how);
 app.use('/', routes);
 
 // catch 404 and forward to error handler
@@ -59,7 +55,6 @@ app.use(function(req, res, next) {
     err.status = 404;
     res.status(404);
     res.render('error',{err: err});
-    //next(err);
 });
 
 
