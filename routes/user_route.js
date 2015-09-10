@@ -52,12 +52,14 @@ module.exports = function(app)
 
 	app.use("/register", registerRouter);
 
+    /*
+
     loginRouter.get('/', function(req,res){
         res.render('user/login');
     });
 
     app.use('/login',loginRouter);
-
+*/
 
 
 

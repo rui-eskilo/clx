@@ -25,6 +25,28 @@ module.exports.Photo.getAllByAnnoucement_id = function(annoucement_id, cb)
   cb);
 };
 
+module.exports.Photo.getOneByAnnoucement_id = function(annoucement_id, cb)
+{
+  db.SelectOne("SELECT photos FROM Photos WHERE annoucem_id=$1 limit 1",
+  [annoucement_id],
+  function(row) { return row.photos; },
+  cb);
+};
+
+/*
+module.exports.Photo.getAllByArrayAnnoucement_id = function(annoucements_id, cb)
+{
+
+  db.SelectAll("SELECT id, name from Category",
+  function(row) { return new Category(row.id, row.name); },
+  cb);
+
+  db.SelectOne("SELECT photos FROM Photos WHERE annoucem_id=$1",
+  [annoucement_id],
+  function(row) { return row.photos; },
+  cb);
+};
+*/
 
 
 module.exports.Photo.edit = function updatePhoto(photo, cb)

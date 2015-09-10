@@ -1,6 +1,6 @@
 var config = require(require('path').resolve(__dirname, "../", "config.js"));
 var utils = require(require('path').resolve(__dirname, "../", "utils.js"));
-var user = require('./../userAuthentication.js').roles;
+var user = require('./userAuthentication.js').roles;
 var multer = require('multer');
 var path = require('path');
 
@@ -188,7 +188,15 @@ module.exports = function(app)
 
             var all_ads = allAnnoucements.filter(function(a) { return a._state == 'activo'});
 
-            all_ads.forEach(function(e){e.description = utils.arrangeString(e.description , nCharDescription);});
+            var photo;
+
+            all_ads.forEach(function(e){
+                e.description = utils.arrangeString(e.description , nCharDescription);
+                /*db.Photo.getOneByAnnoucement_id(e.annouce_id, function(err, photo){
+                    console.log('FOTO DE CADA ANUNCIO');
+                    console.log(photo);
+                });*/
+            });
 
             var model = { title: 'CLX',
                 pagination: utils.getPagination(page, nperpage, all_ads.length),
@@ -355,17 +363,24 @@ annoucementsRouter.post('/view/:id/newcomment', function(req, res)
 
             console.log('ANTES DAS FOTOS');
 
+            console.log('1 - INICIO');
+
             db.Photo.getAllByAnnoucement_id(annoucement.annouce_id, function(err, allPhotos){
                 if(err) req.flash('error','Obter fotos.');
                 photos = allPhotos;
                 console.log('FOTOS EH EH');
                 console.log(photos);
             });
+            console.log('1 - FIM');
 
+            photos=[];
+
+            console.log('2 - INICIO');
             db.Category.getById(annoucement.category, function(err, category)
             {
                 if(err) req.flash('error','Obter descritivo da categoria.');
 
+                console.log('3 - INICIO');
                 db.User.getByUsername(annoucement.owner, function(err, user){
                     var model = { title: 'CLX',
                     message: utils.getMessages(req),
@@ -382,12 +397,13 @@ annoucementsRouter.post('/view/:id/newcomment', function(req, res)
                         model.photos.forEach(function(i) {
                             console.log(i);});
                     }
-
+                    console.log('A - ANTES DO RENDER');
                     res.render('annoucement/view', model );
 
                 });
+                console.log('3 - FIM');
             });
-            
+            console.log('B - FIM');
         });
 });
 
@@ -754,8 +770,8 @@ annoucementsRouter.post('/view/:id/newcomment', function(req, res)
 
     });
 
-
-    /* GET annoucements listing. */
+/*
+    /* GET annoucements listing. 
     annoucementsRouter.get('/', function(req, res) 
     {
         var page = req.query.page || 1;
@@ -766,21 +782,29 @@ annoucementsRouter.post('/view/:id/newcomment', function(req, res)
 
             var all_ads = allAnnoucements.filter(function(a) { return a._state == 'activo'});
 
-            all_ads.forEach(function(e){e.description = utils.arrangeString(e.description , nCharDescription);});
+            console.log('cebolas');
+
+            all_ads.forEach(function(e){
+                e.description = utils.arrangeString(e.description , nCharDescription);
+                db.Photo.getOneByAnnoucement_id(e.annouce_id, function(err, photo){
+                    console.log('FOTO DE CADA ANUNCIO');
+                    console.log(photo);
+                })
+            });
 
             var model = { title: 'CLX',
-            pagination: utils.getPagination(page, nperpage, allAnnoucements.length),
-            message: utils.getMessages(req),
-            nCharDescription: nCharDescription,
-            annoucements: all_ads,
-            list_type: 'allAds',
-            list_title: 'Todos os anúncios', 
-            list_info: all_ads.length == 0 ? 'Lista vazia' : '' 
-        };
-        res.render('annoucement/list', model );
+                pagination: utils.getPagination(page, nperpage, allAnnoucements.length),
+                message: utils.getMessages(req),
+                nCharDescription: nCharDescription,
+                annoucements: all_ads,
+                list_type: 'allAds',
+                list_title: 'Todos os anúncios', 
+                list_info: all_ads.length == 0 ? 'Lista vazia' : '' 
+            };
+            res.render('annoucement/list', model );
+        });
     });
-    });
-
+*/
 
     app.use("/annoucement", annoucementsRouter);
 

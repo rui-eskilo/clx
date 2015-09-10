@@ -4,7 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var userAuth = require('./userAuthentication');
+var userAuth = require('./routes/userAuthentication');
 var nodeUuid = require('node-uuid');
 var flash = require('connect-flash');  //var flash = require('req-flash');
 

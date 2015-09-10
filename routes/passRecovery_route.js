@@ -1,5 +1,6 @@
 var db = require('./../db');
 var generatePassword = require('password-generator');
+var nodemailer = require("nodemailer");
 
 module.exports = function(app){
   var express = require('express');

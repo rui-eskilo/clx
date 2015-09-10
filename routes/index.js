@@ -51,7 +51,7 @@ router.get('/', function(req, res, next) {
 
 });
 
-
+/*
 
 router.get('/all', function(req, res, next) {
 	db.Annoucement.getAllAnnoucements(function(err, allAnnoucement)
@@ -74,5 +74,9 @@ router.get('/filter', function(req, res, next) {
   res.render('item');
   //next();
 });
+
+
+*/
+
 
 module.exports = router;
