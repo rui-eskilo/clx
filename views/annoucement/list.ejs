@@ -13,12 +13,12 @@
 		<div class="media-left media-middle">
 			<%if(list_type == 'myAds'){%>
 				<%if (annoucements[pagination.startidx+i]._state == 'activo') { %>
-					<img class="slide-image" src="/images/active.png" title="Anúncio activo" alt=""style="margin:0px 11px 0px 0px">
+					<img class="small-icon-image" src="/images/active.png" title="Anúncio activo" alt=""style="margin:0px 11px 0px 0px">
 				<% } else {%>
-					<img class="slide-image" src="/images/inactive.png" title="Anúncio cancelado" alt=""style="margin:0px 11px 0px 0px">
+					<img class="small-icon-image" src="/images/inactive.png" title="Anúncio cancelado" alt=""style="margin:0px 11px 0px 0px">
 				<% }%>
 				<div class="media-body">
-					<img class="slide-image" src="http://lorempixel.com/350/350" alt="">
+					<img class="list-small-image" src="http://lorempixel.com/350/350" alt="">
 					<h4 class="media-heading">
 						<a href="/annoucement/view/<%=annoucements[+pagination.startidx+i].annouce_id%>"><%= annoucements[pagination.startidx+i].title %></a>
 					</h4>
@@ -30,7 +30,7 @@
 
 					<div class="media-body"> 
 					
-						<img class="slide-image" src="http://lorempixel.com/350/350" alt="">
+						<img class="list-small-image" src="http://lorempixel.com/350/350" alt="">
 <%if(list_type == 'myFavorites'){%>
 	<% annoucementsWithActivity.forEach(function(e){ %>
 		<% if(e.annoucementid == annoucements[pagination.startidx+i].annouce_id){ %>

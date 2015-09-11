@@ -391,7 +391,6 @@ annoucementsRouter.post('/view/:id/newcomment', function(req, res)
                     annoucement: annoucement,
                     comments: comments,
                     photos: photos,
-                    getCommentByIndex: function(arr, idx){console.log("************************ "+arr[idx].id); return function (){ return arr[idx];};}, // closure for current array index of comments
                     user_owner: user};
                     if (model.photos != undefined) {
                         model.photos.forEach(function(i) {
@@ -671,7 +670,7 @@ annoucementsRouter.post('/view/:id/newcomment', function(req, res)
     annoucementsRouter.get('/close/:id', function(req, res) 
     {
 
-        if(!req.isAuthenticated() || !user.can('access manager')){
+        if(!req.isAuthenticated()){
             res.render('user/access-denied', {action: "Tem de estar autenticado!"});
         }
 
